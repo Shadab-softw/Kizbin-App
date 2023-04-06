@@ -280,7 +280,7 @@ function SearchResultCards(props: IProps) {
 
     // const response = await deleteProduct(data);
     // if (response.ResponseMsg === "Requested Record Successfully Deleted") {
-    //   refatch();
+    // refatch();
     // }
   };
   const queryClient = useQueryClient();
@@ -292,8 +292,8 @@ function SearchResultCards(props: IProps) {
         onPress: () => {
           handledeleteProduct();
           refatch();
-          queryClient.invalidateQueries([QueryKeys.thilocation]);
           setShowHIdden(!showHiden);
+          // queryClient.invalidateQueries([QueryKeys.thilocation]);
         },
       },
       {
