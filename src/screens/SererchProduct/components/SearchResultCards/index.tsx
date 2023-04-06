@@ -278,10 +278,10 @@ function SearchResultCards(props: IProps) {
       listingid: item?.listingid,
     });
 
-    // const response = await deleteProduct(data);
-    // if (response.ResponseMsg === "Requested Record Successfully Deleted") {
-    // refatch();
-    // }
+    const response = await deleteProduct(data);
+    if (response.ResponseMsg === "Requested Record Successfully Deleted") {
+      refatch();
+    }
   };
   const queryClient = useQueryClient();
 
