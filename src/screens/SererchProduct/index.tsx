@@ -9,20 +9,32 @@ import {
   Button,
   TouchableOpacity,
   Text,
+  Keyboard,
 } from "react-native";
-import { useTranslation } from 'react-i18next';
-import { theme } from '../../theme'
-import images from '../../assets/images'
+import { useTranslation } from "react-i18next";
+import { theme } from "../../theme";
+import images from "../../assets/images";
 import CommonHeader from "../../components/CommonHeader/index";
 import ScreensButton from "../../components/ScreenButtom";
 import CustomTextInput from "../../components/TextInput";
 import AddProductCategories from "../../components/AddProductCatagory";
-import { useGetCategoriesData } from '../AddProduct/Queries/useGetCategoriesData'
+import { useGetCategoriesData } from "../AddProduct/Queries/useGetCategoriesData";
 import useUserInfo from "../../hooks/useUserInfo";
 import CustomBarCode from "../../components/CustomBarCode";
-import useDropDownOperation from "../AddProduct/Queries/useDropDownOperations"
+import useDropDownOperation from "../AddProduct/Queries/useDropDownOperations";
 import { useDispatch, useSelector } from "react-redux";
-import { barcodeKey, categoryKey, detailsKey, showDetail, StockKey, StockNumber, subcategoryKey, subcategoryKey2,color,size } from "../../redux/reducers/SerchScreenReducer/Action";
+import {
+  barcodeKey,
+  categoryKey,
+  detailsKey,
+  showDetail,
+  StockKey,
+  StockNumber,
+  subcategoryKey,
+  subcategoryKey2,
+  color,
+  size,
+} from "../../redux/reducers/SerchScreenReducer/Action";
 import SearchProductCategories from "./components/SearchProductCategories";
 import { useGetSubCatData } from "../AddProduct/Queries/useGetSUbCatData";
 import { useGetSubCat2Data } from "../AddProduct/Queries/useGetSubCatData2";
@@ -32,32 +44,32 @@ import { useGetColor } from "../AddProduct/Queries/useGetColor";
 import { useGetSizeData } from "../AddProduct/Queries/useGetSizeData";
 
 function Search(props: any) {
+  const [stockNum, setStockNum] = useState("");
+  const [keyword, setKeyword] = useState("");
+  const [barcode, setBarcode] = useState("");
+  const [category, setCategory] = useState("");
 
-  const [stockNum, setStockNum] = useState('');
-  const [keyword, setKeyword] = useState('');
-  const [barcode, setBarcode] = useState('');
-  const [category, setCategory] = useState('');
+  const [colors, setColor] = useState("");
+  const [sizes, setSize] = useState("");
 
-  const [colors, setColor] = useState('');
-  const [sizes, setSize] = useState('');
+  const [subCategory, setSubCategory] = useState("");
+  const [subCategory2, setSubCategory2] = useState("");
 
-  const [subCategory, setSubCategory] = useState('');
-  const [subCategory2, setSubCategory2] = useState('');
-
-  const [details, setDetails] = useState('');
+  const [details, setDetails] = useState("");
   const [Values, setValues] = useState("");
   const { navigation, route } = props;
   const userData = useUserInfo();
   const { t, i18n } = useTranslation();
   const dispatch = useDispatch();
-  const { deleteSize } = useDropDownOperation()
+  const { deleteSize } = useDropDownOperation();
   const voicesKey = useSelector((states) => states.VoiceKeys);
   const serchdata = useSelector((state) => state?.SerchScreenSort);
-  const { data: dashData, refetch } = useGetCategoriesData({ UserId: userData?.userInfo?.UserId || "" });
+  const { data: dashData, refetch } = useGetCategoriesData({
+    UserId: userData?.userInfo?.UserId || "",
+  });
   const isFocused = useIsFocused();
-  const [colorInput, setColorInput] = useState('');
-  const [sizeInput, setSizeInput] = useState('');
-  
+  const [colorInput, setColorInput] = useState("");
+  const [sizeInput, setSizeInput] = useState("");
 
   const { data: SubCatData, refetch: subCatRefetch } = useGetSubCatData({
     userid: userData?.userInfo?.UserId || "",
@@ -108,7 +120,7 @@ function Search(props: any) {
       if (response.ResponseMsg === "Delete Successful") {
         catRefetch();
       } else if (response.ResponseMsg === "Record Not Empty") {
-        Alert.alert('Record Not Empty. Cannot delete');
+        Alert.alert("Record Not Empty. Cannot delete");
       }
     }
     if (type === "2") {
@@ -217,61 +229,74 @@ function Search(props: any) {
 
   useEffect(() => {
     setValues(voicesresult);
-  })
+  });
 
   const HandleBarcode = (v: any) => {
-    setBarcode(v)
-  }
+    setBarcode(v);
+    Keyboard.dismiss();
+  };
 
   const handlegoback = () => {
     navigation.goBack();
     setValues("");
     setDetails("");
-    setBarcode("")
-    setKeyword("")
-    setStockNum("")
-    setCategory("")
-    setSubCategory("")
-    setSubCategory2("")
-    setColor('')
-    setSize('')
-    setColorInput('')
-    setSizeInput('')
-  }
-  function handleBackButtonClick() {
-    navigation.goBack();
-    setValues("");
-    setDetails("");
-    setBarcode("")
-    setKeyword("")
-    setStockNum("")
-    setCategory("")
-    setSubCategory("")
+    setBarcode("");
+    setKeyword("");
+    setStockNum("");
+    setCategory("");
+    setSubCategory("");
     setSubCategory2("");
     setColor("");
     setSize("");
     setColorInput("");
-    setSizeInput('')
+    setSizeInput("");
+  };
+  function handleBackButtonClick() {
+    navigation.goBack();
+    setValues("");
+    setDetails("");
+    setBarcode("");
+    setKeyword("");
+    setStockNum("");
+    setCategory("");
+    setSubCategory("");
+    setSubCategory2("");
+    setColor("");
+    setSize("");
+    setColorInput("");
+    setSizeInput("");
     return true;
   }
 
   useEffect(() => {
     BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
     return () => {
-      BackHandler.removeEventListener("hardwareBackPress", handleBackButtonClick);
+      BackHandler.removeEventListener(
+        "hardwareBackPress",
+        handleBackButtonClick
+      );
     };
   }, []);
 
   return (
     <SafeAreaView style={styles.safeAreaView}>
       <View style={styles.container}>
-        <CommonHeader headerBg={images.HEADER_BG_SKY} goback={() => handlegoback()} />
+        <CommonHeader
+          headerBg={images.HEADER_BG_SKY}
+          goback={() => handlegoback()}
+        />
         <View style={styles.subContainer}>
-          <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="always">
-            {  isFocused ? (
-            <CustomBarCode input={HandleBarcode} barcode={barcode} search='search' />
-            ) : null
-}
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            keyboardShouldPersistTaps="always"
+          >
+            {isFocused ? (
+              <CustomBarCode
+                input={HandleBarcode}
+                barcode={barcode}
+                search="search"
+              />
+            ) : null}
             <View style={styles.ht10} />
 
             <CustomTextInput
@@ -279,9 +304,13 @@ function Search(props: any) {
               value={stockNum}
               onPressHandler={setStockNum}
               Voicekey="stockNum"
-              heading={t('common:SEARCH_BY_STOCK_NUM')}
+              heading={t("common:SEARCH_BY_STOCK_NUM")}
               err={theme.colors.gray[800]}
-              headingStyle={{ color: theme.colors.gray[900], fontSize: 16, marginLeft: 3 }}
+              headingStyle={{
+                color: theme.colors.gray[900],
+                fontSize: 16,
+                marginLeft: 3,
+              }}
             />
 
             <CustomTextInput
@@ -289,19 +318,20 @@ function Search(props: any) {
               value={keyword}
               onPressHandler={setKeyword}
               Voicekey="keyword"
-              heading={t('common:SEARCH_BY_KEYWORD')}
+              heading={t("common:SEARCH_BY_KEYWORD")}
               err={theme.colors.gray[800]}
-              headingStyle={{ color: theme.colors.gray[900], fontSize: 16, marginLeft: 3 }}
+              headingStyle={{
+                color: theme.colors.gray[900],
+                fontSize: 16,
+                marginLeft: 3,
+              }}
             />
-  
-       
 
             <View style={{ paddingLeft: 5 }}>
               <SearchProductCategories
-                label={t('common:SEARCH_BY_CATEGORY')}
+                label={t("common:SEARCH_BY_CATEGORY")}
                 color={theme.colors.gray[900]}
-             
-                sheetlabel={t('common:SELECT_MASTER_CATEGORY')}
+                sheetlabel={t("common:SELECT_MASTER_CATEGORY")}
                 list={lists}
                 subList={SubCatArray}
                 subList2={SubCat2Array}
@@ -316,57 +346,55 @@ function Search(props: any) {
               />
             </View>
 
-                       <AddProductCategories
-                       editTable={true}
-                          label={t("Search By Color")}
-                          sheetlabel={t("common:LIST_OF_COLORS")}
-                          toAdd={t("common:ADD_MORE_COLOR")}
-                          color={theme.colors.gray[900]}
-                          list={colorArray ? colorArray : []}
-                          deleletitem={deleletitem}
-                          value={colors}
-                          onSelect={setColor}
-                          isSubSheet={false}
-                          type="clr"
-                          delType="4"
-                          draftType="colordraft"
-                          // draftvalue={draftcolor}
-                          reload={colorRefetch}
-                          subreload={colorRefetch}
-                          isSubSheet2={false}
-                          subreload2={subCat2Refetch}
-                          onSubSelect={() => console.log()}
-                          onSubSelect2={() => console.log()}
-                          input={colorInput}
-                          setInput={setColorInput}
-                        />
+            <AddProductCategories
+              editTable={true}
+              label={t("Search By Color")}
+              sheetlabel={t("common:LIST_OF_COLORS")}
+              toAdd={t("common:ADD_MORE_COLOR")}
+              color={theme.colors.gray[900]}
+              list={colorArray ? colorArray : []}
+              deleletitem={deleletitem}
+              value={colors}
+              onSelect={setColor}
+              isSubSheet={false}
+              type="clr"
+              delType="4"
+              draftType="colordraft"
+              // draftvalue={draftcolor}
+              reload={colorRefetch}
+              subreload={colorRefetch}
+              isSubSheet2={false}
+              subreload2={subCat2Refetch}
+              onSubSelect={() => console.log()}
+              onSubSelect2={() => console.log()}
+              input={colorInput}
+              setInput={setColorInput}
+            />
 
-                       <AddProductCategories
-                          editTable={true}
-                          label={t("common:SIZE")}
-                          sheetlabel={t("common:LIST_OF_SIZES")}
-                          toAdd={t("common:ADD_MORE_SIZES")}
-                          color={theme.colors.gray[900]}
-                          list={sizeArray ? sizeArray : []}
-                          deleletitem={deleletitem}
-                          value={sizes}
-                          onSelect={setSize}
-                          isSubSheet={false}
-                          type="size"
-                          delType="3"
-                          draftType="sizedraft"
-                          // draftvalue={draftsize}
-                          reload={sizeRefetch}
-                          subreload={sizeRefetch}
-                          isSubSheet2={false}
-                          subreload2={subCat2Refetch}
-                          onSubSelect={() => console.log()}
-                          onSubSelect2={() => console.log()}
-                          input={sizeInput}
-                          setInput={setSizeInput}
-                        />
-                        
-            
+            <AddProductCategories
+              editTable={true}
+              label={t("common:SIZE")}
+              sheetlabel={t("common:LIST_OF_SIZES")}
+              toAdd={t("common:ADD_MORE_SIZES")}
+              color={theme.colors.gray[900]}
+              list={sizeArray ? sizeArray : []}
+              deleletitem={deleletitem}
+              value={sizes}
+              onSelect={setSize}
+              isSubSheet={false}
+              type="size"
+              delType="3"
+              draftType="sizedraft"
+              // draftvalue={draftsize}
+              reload={sizeRefetch}
+              subreload={sizeRefetch}
+              isSubSheet2={false}
+              subreload2={subCat2Refetch}
+              onSubSelect={() => console.log()}
+              onSubSelect2={() => console.log()}
+              input={sizeInput}
+              setInput={setSizeInput}
+            />
 
             {/* <CustomTextInput
               icons="mic"
@@ -381,49 +409,53 @@ function Search(props: any) {
             <View style={styles.ht10} />
 
             <ScreensButton
-              btnTitle={t('common:SEARCH_THIS_LOCATION')}
+              btnTitle={t("common:SEARCH_THIS_LOCATION")}
               bgcolor={theme.colors.primary[1100]}
               iconName={""}
               onPress={() => {
-                navigation.navigate("Thislocation", { previousscreen: "SearchProduct" })
-                dispatch(StockNumber(stockNum))
-                dispatch(StockKey(keyword))
-                dispatch(barcodeKey(barcode))
-                dispatch(categoryKey(category))
-                dispatch(subcategoryKey(subCategory))
-                dispatch(subcategoryKey2(subCategory2))
-                dispatch(detailsKey(details))
-                dispatch(color(colors))
-                dispatch(size(sizes))
-
-                dispatch(showDetail(1))
+                navigation.navigate("Thislocation", {
+                  previousscreen: "SearchProduct",
+                });
+                dispatch(StockNumber(stockNum));
+                dispatch(StockKey(keyword));
+                dispatch(barcodeKey(barcode));
+                dispatch(categoryKey(category));
+                dispatch(subcategoryKey(subCategory));
+                dispatch(subcategoryKey2(subCategory2));
+                dispatch(detailsKey(details));
+                dispatch(color(colors));
+                dispatch(size(sizes));
+                dispatch(showDetail(1));
+                Keyboard.dismiss();
               }}
             />
 
             <View style={styles.ht10} />
 
             <ScreensButton
-              btnTitle={t('common:SEARCH_ALL_LOCATION')}
+              btnTitle={t("common:SEARCH_ALL_LOCATION")}
               bgcolor={theme.colors.black[1000]}
               iconName={""}
               onPress={() => {
-                navigation.navigate("Allocation", { previousscreen: "SearchProduct" })
-                dispatch(StockNumber(stockNum))
-                dispatch(StockKey(keyword))
-                dispatch(barcodeKey(barcode))
-                dispatch(categoryKey(category))
-                dispatch(subcategoryKey(subCategory))
-                dispatch(subcategoryKey2(subCategory2))
-                dispatch(showDetail(1))
-                dispatch(color(colors))
-                dispatch(size(sizes))
+                navigation.navigate("Allocation", {
+                  previousscreen: "SearchProduct",
+                });
+                dispatch(StockNumber(stockNum));
+                dispatch(StockKey(keyword));
+                dispatch(barcodeKey(barcode));
+                dispatch(categoryKey(category));
+                dispatch(subcategoryKey(subCategory));
+                dispatch(subcategoryKey2(subCategory2));
+                dispatch(showDetail(1));
+                dispatch(color(colors));
+                dispatch(size(sizes));
               }}
             />
 
             <View style={styles.ht10} />
 
             <ScreensButton
-              btnTitle={t('common:CLEAR_SEARCH')}
+              btnTitle={t("common:CLEAR_SEARCH")}
               bgcolor={theme.colors.yellow[400]}
               iconName={""}
               onPress={() => {
@@ -434,21 +466,22 @@ function Search(props: any) {
                 setSubCategory2("");
                 setDetails("");
                 setBarcode("");
-                setColor('')
-                setSize('')
-                setColorInput('')
-                setSizeInput('')
+                setColor("");
+                setSize("");
+                setColorInput("");
+                setSizeInput("");
 
                 dispatch(categoryKey(""));
                 dispatch(subcategoryKey(""));
                 dispatch(subcategoryKey2(""));
-                dispatch(StockNumber(''))
-                dispatch(StockKey(''))
-                dispatch(barcodeKey(''))
+                dispatch(StockNumber(""));
+                dispatch(StockKey(""));
+                dispatch(barcodeKey(""));
                 // dispatch(showDetail(1))
-                dispatch(color(''))
-                dispatch(size(''))
-              }} />
+                dispatch(color(""));
+                dispatch(size(""));
+              }}
+            />
 
             <View style={styles.ht10} />
 
@@ -468,7 +501,7 @@ function Search(props: any) {
               }
               }
             /> */}
-            < View style={styles.ht10} />
+            <View style={styles.ht10} />
           </ScrollView>
         </View>
       </View>

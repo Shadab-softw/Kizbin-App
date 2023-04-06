@@ -43,19 +43,13 @@ interface IProps {
   refatch: () => void;
   previousScreen: string;
   navigation: any;
-  loading: boolean
+  loading: boolean;
 }
 
 function SearchResultCards(props: IProps) {
   const { t, i18n } = useTranslation();
   const userdata = useUserInfo();
-  const {
-    item,
-    navigation,
-    refatch,
-    previousScreen,
-    loading
-  } = props;
+  const { item, navigation, refatch, previousScreen, loading } = props;
   const [showHiden, setShowHIdden] = useState(false);
   const [showPriceModal, setShowPriceModal] = useState(false);
   const [price, setPrice] = useState(item?.price);
@@ -65,13 +59,13 @@ function SearchResultCards(props: IProps) {
   const [showLocationList, setShowLocationList] = useState(true);
   const [stateLocation, setStateLocation] = useState(item?.location);
   const isFocused = useIsFocused();
-  const [image1, setImage1] = useState()
-  const [image2, setImage2] = useState()
-  const [image3, setImage3] = useState()
-  const [image4, setImage4] = useState()
+  const [image1, setImage1] = useState();
+  const [image2, setImage2] = useState();
+  const [image3, setImage3] = useState();
+  const [image4, setImage4] = useState();
 
   const serchdata = useSelector((state) => state?.SerchScreenSort);
-  console.log("item", JSON.stringify(item, null, 2));
+  // console.log("item", JSON.stringify(item, null, 2));
 
   const { editPriceQtyLoc } = useSetPriceQtyLoc();
   const { setLocations } = useSetLocations();
@@ -79,7 +73,7 @@ function SearchResultCards(props: IProps) {
   const { deleteProduct } = useDeleteProduct();
   const userShop = userdata.userInfo?.UserName;
 
-  const queries = useQueryClient()
+  const queries = useQueryClient();
   const { data: locationData, refetch: locrefetch } = useGetLocations({
     userid: item?.userid,
     suball: 1,
@@ -107,7 +101,7 @@ function SearchResultCards(props: IProps) {
     setImage2(item?.image_2);
     setImage3(item?.image_3);
     setImage4(item?.image_4);
-  }, [item])
+  }, [item]);
 
   const arrLocations = locationData?.LocData;
   const arrtemp = arrLocations?.split(",");
@@ -182,10 +176,9 @@ function SearchResultCards(props: IProps) {
           location: item?.location,
         };
         const response = await editPriceQtyLoc(data);
-        queries.invalidateQueries([QueryKeys.useAllLocation])
-        queries.invalidateQueries([QueryKeys.useOutStock])
-        queries.invalidateQueries([QueryKeys.thilocation])
-
+        queries.invalidateQueries([QueryKeys.useAllLocation]);
+        queries.invalidateQueries([QueryKeys.useOutStock]);
+        queries.invalidateQueries([QueryKeys.thilocation]);
       } else if (price == "") {
         var data: any = {
           do: "SetPCQL",
@@ -210,11 +203,10 @@ function SearchResultCards(props: IProps) {
           location: item?.location,
         };
         const response = await editPriceQtyLoc(data);
-        if (response.ResponseMsg === 'Records Updated') {
+        if (response.ResponseMsg === "Records Updated") {
           refatch();
         }
-        queries.removeQueries([QueryKeys.useOutStock])
-
+        queries.removeQueries([QueryKeys.useOutStock]);
       } else if (quantity == "") {
         var data: any = {
           do: "SetPCQL",
@@ -239,13 +231,13 @@ function SearchResultCards(props: IProps) {
           location: loc,
         };
         const response = await editPriceQtyLoc(data);
-        console.log(
-          "search result hidden>>>",
-          JSON.stringify(response, null, 2)
-        );
-        queries.invalidateQueries([QueryKeys.useAllLocation])
-        queries.invalidateQueries([QueryKeys.useOutStock])
-        queries.invalidateQueries([QueryKeys.thilocation])
+        // console.log(
+        //   "search result hidden>>>",
+        //   JSON.stringify(response, null, 2)
+        // );
+        queries.invalidateQueries([QueryKeys.useAllLocation]);
+        queries.invalidateQueries([QueryKeys.useOutStock]);
+        queries.invalidateQueries([QueryKeys.thilocation]);
       } else if (loc == "") {
         var data: any = {
           do: "SetPCQL",
@@ -279,13 +271,19 @@ function SearchResultCards(props: IProps) {
     }
   };
 
-  const handledeleteProduct = () => {
+  const handledeleteProduct = async () => {
     deleteProduct({
       do: "DeleteInventory",
       userid: item?.userid,
       listingid: item?.listingid,
     });
+
+    // const response = await deleteProduct(data);
+    // if (response.ResponseMsg === "Requested Record Successfully Deleted") {
+    //   refatch();
+    // }
   };
+  const queryClient = useQueryClient();
 
   const deletePopup = () =>
     Alert.alert("", t("common:DELETE_PRODUCT"), [
@@ -294,6 +292,8 @@ function SearchResultCards(props: IProps) {
         onPress: () => {
           handledeleteProduct();
           refatch();
+          queryClient.invalidateQueries([QueryKeys.thilocation]);
+          setShowHIdden(!showHiden);
         },
       },
       {
@@ -301,7 +301,6 @@ function SearchResultCards(props: IProps) {
         style: "cancel",
       },
     ]);
-
   if (loading) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
@@ -309,10 +308,10 @@ function SearchResultCards(props: IProps) {
       </View>
     );
   }
-  let imageUrl = image1 && `${image1}?time+${new Date()}`
-  let imageUrl2 = image2 && `${image2}?time+${new Date()}`
-  let imageUrl3 = image3 && `${image3}?time+${new Date()}`
-  let imageUrl4 = image4 && `${image4}?time+${new Date()}`
+  let imageUrl = image1 && `${image1}?time+${new Date()}`;
+  let imageUrl2 = image2 && `${image2}?time+${new Date()}`;
+  let imageUrl3 = image3 && `${image3}?time+${new Date()}`;
+  let imageUrl4 = image4 && `${image4}?time+${new Date()}`;
 
   // console.log("imageUrl", imageUrl);
 
@@ -328,10 +327,12 @@ function SearchResultCards(props: IProps) {
         onPress={() => setShowHIdden(!showHiden)}
       >
         <View style={styles.block}>
-          <View style={[styles.block, { width: '77%', marginRight: 5 }]}>
+          <View style={[styles.block, { width: "77%", marginRight: 5 }]}>
             <Image
               source={
-                imageUrl ? { uri: imageUrl, cache: "reload" } : images.LOGIN_LOGO
+                imageUrl
+                  ? { uri: imageUrl, cache: "reload" }
+                  : images.LOGIN_LOGO
               }
               resizeMode="contain"
               style={styles.showImg}
@@ -341,7 +342,9 @@ function SearchResultCards(props: IProps) {
               <Caption style={styles.productcategory}>
                 {item?.cat_master || 0}
               </Caption>
-              <Caption style={[styles.productcategory, { textTransform: 'uppercase' }]}>
+              <Caption
+                style={[styles.productcategory, { textTransform: "uppercase" }]}
+              >
                 {item?.listingid || 0}
               </Caption>
               <SubTitle style={styles.productStock}>
@@ -363,7 +366,12 @@ function SearchResultCards(props: IProps) {
             <SubTitle style={styles.productDesc}>{item?.description}</SubTitle>
 
             <TouchableOpacity
-              disabled={userdata?.userInfo?.UserType === 5 || userShop != item?.listingid.substr(0, 4) ? true : false}
+              disabled={
+                userdata?.userInfo?.UserType === 5 ||
+                userShop != item?.listingid.substr(0, 4)
+                  ? true
+                  : false
+              }
               style={[styles.block, styles.block2]}
               activeOpacity={0.9}
               onPress={() => setShowPriceModal(true)}
@@ -375,17 +383,20 @@ function SearchResultCards(props: IProps) {
                 <SubTitle style={styles.labelValue}>{price}</SubTitle>
               </View>
               <View style={styles.flex3}>
-                {userdata?.userInfo?.UserType === 5 || userShop != item?.listingid.substr(0, 4) ? null : <TouchableOpacity
-                  disabled={userdata?.userInfo?.UserType === 5 ? true : false}
-                  activeOpacity={0.9}
-                  onPress={() => setShowPriceModal(true)}
-                >
-                  <FontAwesome
-                    name="pencil"
-                    size={25}
-                    color={theme.colors.skyblue[200]}
-                  />
-                </TouchableOpacity>}
+                {userdata?.userInfo?.UserType === 5 ||
+                userShop != item?.listingid.substr(0, 4) ? null : (
+                  <TouchableOpacity
+                    disabled={userdata?.userInfo?.UserType === 5 ? true : false}
+                    activeOpacity={0.9}
+                    onPress={() => setShowPriceModal(true)}
+                  >
+                    <FontAwesome
+                      name="pencil"
+                      size={25}
+                      color={theme.colors.skyblue[200]}
+                    />
+                  </TouchableOpacity>
+                )}
               </View>
             </TouchableOpacity>
 
@@ -428,7 +439,12 @@ function SearchResultCards(props: IProps) {
               </Modal.Content>
             </Modal>
             <TouchableOpacity
-              disabled={userdata?.userInfo?.UserType === 5 || userShop != item?.listingid.substr(0, 4) ? true : false}
+              disabled={
+                userdata?.userInfo?.UserType === 5 ||
+                userShop != item?.listingid.substr(0, 4)
+                  ? true
+                  : false
+              }
               style={[styles.block, styles.block2]}
               activeOpacity={0.9}
               onPress={() => setShowQuantityModal(true)}
@@ -439,22 +455,23 @@ function SearchResultCards(props: IProps) {
                 </SubTitle>
               </View>
               <View style={styles.flex2}>
-                <SubTitle style={styles.labelValue}>
-                  {quantity}
-                </SubTitle>
+                <SubTitle style={styles.labelValue}>{quantity}</SubTitle>
               </View>
               <View style={styles.flex3}>
-                {userdata?.userInfo?.UserType === 5 || userShop != item?.listingid.substr(0, 4) ? null : <TouchableOpacity
-                  disabled={userdata?.userInfo?.UserType === 5 ? true : false}
-                  activeOpacity={0.9}
-                  onPress={() => setShowQuantityModal(true)}
-                >
-                  <FontAwesome
-                    name="pencil"
-                    size={25}
-                    color={theme.colors.skyblue[200]}
-                  />
-                </TouchableOpacity>}
+                {userdata?.userInfo?.UserType === 5 ||
+                userShop != item?.listingid.substr(0, 4) ? null : (
+                  <TouchableOpacity
+                    disabled={userdata?.userInfo?.UserType === 5 ? true : false}
+                    activeOpacity={0.9}
+                    onPress={() => setShowQuantityModal(true)}
+                  >
+                    <FontAwesome
+                      name="pencil"
+                      size={25}
+                      color={theme.colors.skyblue[200]}
+                    />
+                  </TouchableOpacity>
+                )}
               </View>
             </TouchableOpacity>
             <Modal
@@ -497,7 +514,12 @@ function SearchResultCards(props: IProps) {
             </Modal>
 
             <TouchableOpacity
-              disabled={userdata?.userInfo?.UserType === 5 || userShop != item?.listingid.substr(0, 4) ? true : false}
+              disabled={
+                userdata?.userInfo?.UserType === 5 ||
+                userShop != item?.listingid.substr(0, 4)
+                  ? true
+                  : false
+              }
               style={[styles.block, styles.block2]}
               activeOpacity={0.9}
               onPress={() => setShowLocationModal(true)}
@@ -509,18 +531,20 @@ function SearchResultCards(props: IProps) {
                 <SubTitle style={styles.labelValue}>{stateLocation}</SubTitle>
               </View>
               <View style={styles.flex3}>
-                {userdata?.userInfo?.UserType === 5 || userShop != item?.listingid.substr(0, 4) ? null : <TouchableOpacity
-                  disabled={userdata?.userInfo?.UserType === 5 ? true : false}
-                  activeOpacity={0.9}
-                  onPress={() => setShowLocationModal(true)}
-                >
-                  <FontAwesome
-                    name="pencil"
-                    size={25}
-                    color={theme.colors.skyblue[200]}
-                  />
-                </TouchableOpacity>}
-
+                {userdata?.userInfo?.UserType === 5 ||
+                userShop != item?.listingid.substr(0, 4) ? null : (
+                  <TouchableOpacity
+                    disabled={userdata?.userInfo?.UserType === 5 ? true : false}
+                    activeOpacity={0.9}
+                    onPress={() => setShowLocationModal(true)}
+                  >
+                    <FontAwesome
+                      name="pencil"
+                      size={25}
+                      color={theme.colors.skyblue[200]}
+                    />
+                  </TouchableOpacity>
+                )}
               </View>
             </TouchableOpacity>
 
@@ -595,7 +619,6 @@ function SearchResultCards(props: IProps) {
                     )}
                   </ScrollView>
 
-
                   {showLocationList ? (
                     <View style={styles.addBtnBox}>
                       <CustomAddBtn onPress={handleAdd} />
@@ -605,39 +628,52 @@ function SearchResultCards(props: IProps) {
               </Modal.Content>
             </Modal>
 
-            <View style={[styles.block, { marginBottom: 10, justifyContent: 'space-between' }]}>
+            <View
+              style={[
+                styles.block,
+                { marginBottom: 10, justifyContent: "space-between" },
+              ]}
+            >
               <Image
                 source={
-                  imageUrl ? { uri: imageUrl, cache: "reload" } : images.LOGIN_LOGO
+                  imageUrl
+                    ? { uri: imageUrl, cache: "reload" }
+                    : images.LOGIN_LOGO
                 }
                 resizeMode="contain"
                 style={styles.productImg}
               />
               <Image
                 source={
-                  imageUrl2 ? { uri: imageUrl2, cache: "reload" } : images.LOGIN_LOGO
+                  imageUrl2
+                    ? { uri: imageUrl2, cache: "reload" }
+                    : images.LOGIN_LOGO
                 }
                 resizeMode="contain"
                 style={styles.productImg}
               />
               <Image
                 source={
-                  imageUrl3 ? { uri: imageUrl3, cache: "reload" } : images.LOGIN_LOGO
+                  imageUrl3
+                    ? { uri: imageUrl3, cache: "reload" }
+                    : images.LOGIN_LOGO
                 }
                 resizeMode="contain"
                 style={styles.productImg}
               />
               <Image
                 source={
-                  imageUrl4 ? { uri: imageUrl4, cache: "reload" } : images.LOGIN_LOGO
+                  imageUrl4
+                    ? { uri: imageUrl4, cache: "reload" }
+                    : images.LOGIN_LOGO
                 }
                 resizeMode="contain"
                 style={styles.productImg}
               />
             </View>
             <View style={styles.block}>
-              {previousScreen === "Allocation" ?
-                userdata?.userInfo?.UserType === 5 ?
+              {previousScreen === "Allocation" ? (
+                userdata?.userInfo?.UserType === 5 ? (
                   <>
                     <View style={styles.flex4}>
                       <ScreensButton
@@ -662,73 +698,75 @@ function SearchResultCards(props: IProps) {
                         }
                       />
                     </View>
-                  </> :
-                  userShop == item?.listingid.substr(0, 4) ?
-                    <>
-                      <View style={styles.flex4}>
-                        <ScreensButton
-                          btnTitle={t("common:SHARE")}
-                          bgcolor={theme.colors.green[400]}
-                          iconName={""}
-                          onPress={onShare}
-                        />
-                      </View>
+                  </>
+                ) : userShop == item?.listingid.substr(0, 4) ? (
+                  <>
+                    <View style={styles.flex4}>
+                      <ScreensButton
+                        btnTitle={t("common:SHARE")}
+                        bgcolor={theme.colors.green[400]}
+                        iconName={""}
+                        onPress={onShare}
+                      />
+                    </View>
 
-                      <View style={styles.flex4}>
-                        <ScreensButton
-                          btnTitle={t("common:EDIT")}
-                          bgcolor={theme.colors.skyblue[200]}
-                          iconName={""}
-                          onPress={() =>
-                            navigation.navigate("EditScreen", {
-                              name: "Edit Inventory",
-                              id: item?.listingid,
-                              itempass: item,
-                              previousScreen: previousScreen,
-                            })
-                          }
-                        />
-                      </View>
-                      <View style={styles.flex4}>
-                        <ScreensButton
-                          btnTitle={t("common:DELETE")}
-                          bgcolor={theme.colors.red[500]}
-                          iconName={""}
-                          onPress={() => {
-                            deletePopup();
-                          }}
-                        />
-                      </View>
-                    </> :
-                    <>
-                      <View style={styles.flex4}>
-                        <ScreensButton
-                          btnTitle={t("common:SHARE")}
-                          bgcolor={theme.colors.green[400]}
-                          iconName={""}
-                          onPress={onShare}
-                        />
-                      </View>
-                      <View style={styles.flex4}>
-                        <ScreensButton
-                          btnTitle={t("common:VIEW_DETAIL")}
-                          bgcolor={theme.colors.skyblue[200]}
-                          iconName={""}
-                          onPress={() =>
-                            navigation.navigate("EditScreen", {
-                              name: "Edit Inventory",
-                              id: item?.listingid,
-                              itempass: item,
-                              previousScreen: previousScreen,
-                            })
-                          }
-                        />
-                      </View>
-                    </>
-                : null}
+                    <View style={styles.flex4}>
+                      <ScreensButton
+                        btnTitle={t("common:EDIT")}
+                        bgcolor={theme.colors.skyblue[200]}
+                        iconName={""}
+                        onPress={() =>
+                          navigation.navigate("EditScreen", {
+                            name: "Edit Inventory",
+                            id: item?.listingid,
+                            itempass: item,
+                            previousScreen: previousScreen,
+                          })
+                        }
+                      />
+                    </View>
+                    <View style={styles.flex4}>
+                      <ScreensButton
+                        btnTitle={t("common:DELETE")}
+                        bgcolor={theme.colors.red[500]}
+                        iconName={""}
+                        onPress={() => {
+                          deletePopup();
+                        }}
+                      />
+                    </View>
+                  </>
+                ) : (
+                  <>
+                    <View style={styles.flex4}>
+                      <ScreensButton
+                        btnTitle={t("common:SHARE")}
+                        bgcolor={theme.colors.green[400]}
+                        iconName={""}
+                        onPress={onShare}
+                      />
+                    </View>
+                    <View style={styles.flex4}>
+                      <ScreensButton
+                        btnTitle={t("common:VIEW_DETAIL")}
+                        bgcolor={theme.colors.skyblue[200]}
+                        iconName={""}
+                        onPress={() =>
+                          navigation.navigate("EditScreen", {
+                            name: "Edit Inventory",
+                            id: item?.listingid,
+                            itempass: item,
+                            previousScreen: previousScreen,
+                          })
+                        }
+                      />
+                    </View>
+                  </>
+                )
+              ) : null}
 
-              {previousScreen === "OutStock" ?
-                userdata?.userInfo?.UserType === 5 ?
+              {previousScreen === "OutStock" ? (
+                userdata?.userInfo?.UserType === 5 ? (
                   <View style={styles.flex4}>
                     <ScreensButton
                       btnTitle={t("common:VIEW_DETAIL")}
@@ -743,7 +781,8 @@ function SearchResultCards(props: IProps) {
                         })
                       }
                     />
-                  </View> :
+                  </View>
+                ) : (
                   <>
                     <View style={styles.flex4}>
                       <ScreensButton
@@ -772,10 +811,11 @@ function SearchResultCards(props: IProps) {
                       />
                     </View>
                   </>
-                : null}
+                )
+              ) : null}
 
-              {previousScreen === "Thislocation" ?
-                userdata?.userInfo?.UserType === 5 ?
+              {previousScreen === "Thislocation" ? (
+                userdata?.userInfo?.UserType === 5 ? (
                   <>
                     <View style={styles.flex4}>
                       <ScreensButton
@@ -801,7 +841,7 @@ function SearchResultCards(props: IProps) {
                       />
                     </View>
                   </>
-                  :
+                ) : (
                   <>
                     <View style={styles.flex4}>
                       <ScreensButton
@@ -839,7 +879,8 @@ function SearchResultCards(props: IProps) {
                       />
                     </View>
                   </>
-                : null}
+                )
+              ) : null}
             </View>
           </View>
         ) : null}
@@ -871,7 +912,7 @@ const styles = StyleSheet.create({
   },
   showText: {
     marginLeft: 10,
-    width: '60%'
+    width: "60%",
   },
   productname: {
     fontSize: 17,

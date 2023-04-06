@@ -23,7 +23,6 @@ import Profilescreenstate from "../../../redux/reducers/prostatesfile/reducer";
 import { ProfileLoad } from "../../../redux/reducers/ProfileScreenReducer/Action";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 
-
 function BottomButtons(props: any) {
   const { navigation, dashData, userdata, navigationhandle } = props;
   const { t, i18n } = useTranslation();
@@ -94,32 +93,32 @@ function BottomButtons(props: any) {
   return (
     <View style={styles.navigation}>
       <View style={styles.subNav}>
-        {userdata?.userInfo?.UserType === 5 ? null : (
-          <TouchableOpacity
-            style={styles.navigationBtn}
-            onPress={() => {
-              dashData?.extra === 1 || dashData?.extra > 1
-                ? Linking.openURL(dashData?.Catch)
-                : navigationhandle("AddProduct");
-            }}
+        {/* {userdata?.userInfo?.UserType === 5 ? null : ( */}
+        <TouchableOpacity
+          style={styles.navigationBtn}
+          onPress={() => {
+            dashData?.extra === 1 || dashData?.extra > 1
+              ? Linking.openURL(dashData?.Catch)
+              : navigationhandle("AddProduct");
+          }}
+        >
+          <View
+            style={[
+              styles.naviicon,
+              { backgroundColor: theme.colors.green[600] },
+            ]}
           >
-            <View
-              style={[
-                styles.naviicon,
-                { backgroundColor: theme.colors.green[600] },
-              ]}
-            >
-              <FontIcon
-                name="dropbox"
-                size={40}
-                color={theme.colors.appWhite[100]}
-              />
-            </View>
-            <SubTitle style={styles.navigationBtnText}>
-              {t("common:Add")}
-            </SubTitle>
-          </TouchableOpacity>
-        )}
+            <FontIcon
+              name="dropbox"
+              size={40}
+              color={theme.colors.appWhite[100]}
+            />
+          </View>
+          <SubTitle style={styles.navigationBtnText}>
+            {t("common:Add")}
+          </SubTitle>
+        </TouchableOpacity>
+        {/* )} */}
 
         <TouchableOpacity
           style={styles.navigationBtn}
@@ -171,7 +170,10 @@ function BottomButtons(props: any) {
           <TouchableOpacity
             style={styles.navigationBtn}
             // const [loadProfile, setLoadProfile] = React.useState(false);
-            onPress={() => { navigationhandle("ProfileScreen"); dispatch(ProfileLoad(1)) }}
+            onPress={() => {
+              navigationhandle("ProfileScreen");
+              dispatch(ProfileLoad(1));
+            }}
           >
             <View
               style={[
@@ -220,14 +222,21 @@ function BottomButtons(props: any) {
           <SubTitle style={styles.navigationBtnText}>{t('common:Out_Of_Stock')}</SubTitle>
         </TouchableOpacity> */}
 
-        <TouchableOpacity style={styles.navigationBtn} onPress={() => navigationhandle("OutStock")}>
+        <TouchableOpacity
+          style={styles.navigationBtn}
+          onPress={() => navigationhandle("OutStock")}
+        >
           <View
             style={[
               styles.naviicon,
               { backgroundColor: theme.colors.red[900] },
             ]}
           >
-            <MaterialCommunityIcons name="cart-off" size={35} color={theme.colors.appWhite[100]} />
+            <MaterialCommunityIcons
+              name="cart-off"
+              size={35}
+              color={theme.colors.appWhite[100]}
+            />
           </View>
           <SubTitle style={styles.navigationBtnText}>
             {t("common:Out_Of_Stock")}
