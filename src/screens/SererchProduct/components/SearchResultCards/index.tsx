@@ -63,6 +63,8 @@ function SearchResultCards(props: IProps) {
   const [image2, setImage2] = useState();
   const [image3, setImage3] = useState();
   const [image4, setImage4] = useState();
+  const refInput = React.useRef(null);
+  const refInput2 = React.useRef(null);
 
   const serchdata = useSelector((state) => state?.SerchScreenSort);
   // console.log("item", JSON.stringify(item, null, 2));
@@ -314,6 +316,15 @@ function SearchResultCards(props: IProps) {
   let imageUrl4 = image4 && `${image4}?time+${new Date()}`;
 
   // console.log("imageUrl", imageUrl);
+  const handleQuantity = () => {
+    refInput.current.focus();
+    setShowQuantityModal(true);
+  };
+
+  const handlePrice = () => {
+    refInput2.current.focus();
+    setShowPriceModal(true);
+  };
 
   return (
     <ImageBackground
@@ -388,7 +399,7 @@ function SearchResultCards(props: IProps) {
                   <TouchableOpacity
                     disabled={userdata?.userInfo?.UserType === 5 ? true : false}
                     activeOpacity={0.9}
-                    onPress={() => setShowPriceModal(true)}
+                    onPress={() => handlePrice()}
                   >
                     <FontAwesome
                       name="pencil"
@@ -409,6 +420,7 @@ function SearchResultCards(props: IProps) {
                   <TextInput
                     style={styles.modalInput}
                     keyboardType="numeric"
+                    ref={refInput2}
                     onChangeText={(text) => setPrice(text)}
                   />
                   <View style={styles.block}>
@@ -463,7 +475,7 @@ function SearchResultCards(props: IProps) {
                   <TouchableOpacity
                     disabled={userdata?.userInfo?.UserType === 5 ? true : false}
                     activeOpacity={0.9}
-                    onPress={() => setShowQuantityModal(true)}
+                    onPress={() => handleQuantity()}
                   >
                     <FontAwesome
                       name="pencil"
@@ -483,6 +495,7 @@ function SearchResultCards(props: IProps) {
                   <TextInput
                     style={styles.modalInput}
                     keyboardType="numeric"
+                    ref={refInput}
                     onChangeText={(text) => setQuantity(text)}
                   />
                   <View style={styles.block}>
@@ -576,13 +589,13 @@ function SearchResultCards(props: IProps) {
                                   {item}
                                 </SubTitle>
                               </TouchableOpacity>
-                              <TouchableOpacity onPress={() => deleteLoc(item)}>
+                              {/* <TouchableOpacity onPress={() => deleteLoc(item)}>
                                 <Ionicons
                                   name="trash-outline"
                                   color={theme.colors.red[500]}
                                   size={22}
                                 />
-                              </TouchableOpacity>
+                              </TouchableOpacity> */}
                             </View>
                           </View>
                         ) : null;

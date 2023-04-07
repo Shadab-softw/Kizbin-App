@@ -118,8 +118,6 @@ function BottomButtons(props: any) {
             {t("common:Add")}
           </SubTitle>
         </TouchableOpacity>
-        {/* )} */}
-
         <TouchableOpacity
           style={styles.navigationBtn}
           onPress={() =>
