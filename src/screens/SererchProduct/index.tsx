@@ -369,6 +369,7 @@ function Search(props: any) {
               onSubSelect2={() => console.log()}
               input={colorInput}
               setInput={setColorInput}
+              draftvalue={""}
             />
 
             <AddProductCategories
@@ -394,6 +395,7 @@ function Search(props: any) {
               onSubSelect2={() => console.log()}
               input={sizeInput}
               setInput={setSizeInput}
+              draftvalue={""}
             />
 
             {/* <CustomTextInput
