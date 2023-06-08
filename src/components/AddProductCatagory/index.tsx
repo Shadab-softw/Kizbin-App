@@ -252,7 +252,7 @@ function AddProductCategories(props: IProps) {
         onSubSelect(subCategory1);
         setShowForm(false);
         setShowSubSheet(false);
-        setInput1(subCategory1);
+        // setInput1(subCategory1);
         const data: any = {
             do: 'SetSubCat',
             userid: userdata?.userInfo?.UserId || '',
@@ -272,7 +272,7 @@ function AddProductCategories(props: IProps) {
         onSubSelect2(subCategory2);
         setShowForm(false);
         setShowSubSheet2(false);
-        setInput2(subCategory2);
+        // setInput2(subCategory2);
         const data: any = {
             do: 'SetSubCat',
             userid: userdata?.userInfo?.UserId || '',
